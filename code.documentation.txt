@@ -1,0 +1,131 @@
+THIS MODULE CONTAINTS A DASH APP THAT VISUALIZES GNSS DATA FROM A CSV FILE
+--------------------------------------------------------------------------
+The app consists of three tabs: Measurement, Map, and Setting. 
+Each tab displays different data visualizations.
+
+Dependencies
+•	datetime
+•	dash
+•	pandas
+•	plotly.express
+•	plotly.graph_objs
+
+Variables
+•	df: a pandas DataFrame that stores the data loaded from the CSV file.
+Functions
+•	app.layout: defines the layout of the Dash app, including a navbar with three buttons, 
+a header with the app title, and a placeholder div for content.
+•	@app.callback: a decorator that defines the callback function for all tab clicks. 
+It takes three inputs, representing the number of times each tab has been clicked, 
+and returns the content for the selected tab.
+
+Usage
+1.	Load the data into a CSV file with the filename 'navigation.csv' and the date_time 
+column parsed as datetime.
+2.	Run the module to launch the Dash app.
+3.	Click on one of the three tabs to view the corresponding data visualization.
+
+
+---------------------------
+FUNCTION 1: display_content
+
+This function takes in three parameters, measurement_clicks, map_clicks, and setting_clicks. 
+It is used as a callback to update the content of the tabs in a Dash application.
+The function first checks the trigger of the callback using the dash.callback_context object. 
+If the callback was not triggered, the function sets the button_id variable to 'measurement-tab', 
+which is the default tab. Otherwise, it gets the ID of the triggered component, 
+which is the first item in the ctx.triggered list, and sets button_id to the ID of the tab that was clicked.
+
+The function then returns the content of the selected tab. 
+If button_id is equal to 'measurement-tab', it returns a html.Div object containing the content of the measurement tab. 
+This tab has three sections: a date time selector for the measurement start time, a date time selector for 
+the measurement stop time, and a data selector for the measurement data to be plotted. 
+It also includes a button to plot the selected data and a html.Div object to display the resulting plot.
+
+If button_id is equal to 'map-tab', it returns a html.Div object containing the content of the map tab. 
+This tab has the same structure as the measurement tab, but with different IDs for the components.
+
+---------------------------------
+FUNCTION 2: plot_measurement_data
+
+This function is designed to plot selected measurement data by taking in five parameters: 
+start_time, stop_time, data_type, longitude, and latitude. 
+The purpose of this function is to create a scatter plot of the selected measurement data against time, 
+with longitude and latitude on the x and y axes, respectively.
+
+Here is a breakdown of how the function works:
+
+1. The function first filters the data frame df by the selected start_time and stop_time parameters. 
+This is done by selecting only the rows where the time column falls between the start_time and stop_time values.
+
+2. The function then selects the data column based on the selected data_type parameter. 
+This is done by using the loc method to select only the rows where the column header matches the selected data_type. 
+Any rows with NaN values are then dropped using the dropna method.
+
+3. Finally, the function creates a scatter plot of the data against time, with longitude and latitude on the x and y axes, respectively. 
+This is done using the scatter method of the plotly.graph_objs module. The resulting plot is returned as a plotly.graph_objs.Figure object.
+
+-------------------------
+FUNCTION 3: plot_map_data
+
+This function is designed to plot selected map data by taking in four parameters: start_time, stop_time, longitude, and latitude. 
+The purpose of this function is to create a scatter plot of the longitude and latitude data, with color and size mapped to the time data.
+
+Here is a breakdown of how the function works:
+
+1. The function first filters the data frame df by the selected start_time and stop_time parameters. 
+This is done by selecting only the rows where the time column falls between the start_time and stop_time values.
+
+2. The function then creates a scatter plot of the longitude and latitude data, with color and size mapped to the time data. 
+This is done using the scatter method of the plotly.graph_objs module, where the x parameter is set to the longitude column, 
+the y parameter is set to the latitude column, the mode parameter is set to markers, and the marker parameter is set to a dictionary 
+that maps the color and size parameters to the selected time data.
+
+3.Finally, the resulting plot is returned as a plotly.graph_objs.Figure object.
+
+
+----------------------------------
+FUNCTION 4: update_measurement_plot
+This function is a callback function for the "Plot" button click. 
+
+It takes in ten parameters, including the start and stop date, hour, minute, and second, 
+and the data type to plot. 
+
+1. The function first converts the start and stop date, hour, minute, 
+and second parameters into a datetime object for filtering the data frame df. 
+
+2. It then filters the data frame df based on the selected start and stop times.
+
+3. Next, the function creates a new plotly.graph_objs.Figure object based on the 
+selected data type. If the selected data type is 'longitude', the function creates 
+a line plot of longitude against time. If the selected data type is 'latitude', 
+the function creates a line plot of latitude against time. If the selected data type
+is 'altitude', the function creates a line plot of altitude against time. 
+Otherwise, the function returns an empty dictionary. 
+
+4. The resulting plot is returned as a plotly.graph_objs.
+Figure object and displayed on the application interface.
+
+--------------------------------------
+FUNCTION 5: update-map 
+
+This function is a callback function for the "Plot" button click. 
+It takes in ten parameters, including the start and stop date, hour, minute, and second, 
+and the DataFrame to plot. 
+
+1. The function first converts the start and stop date, hour, minute, 
+and second into datetime objects, and then filters the DataFrame based on these times. 
+
+2. It then creates a scattermapbox trace for the filtered longitude and latitude data, 
+and sets the marker size, color, and opacity. The trace text is set to the altitude values 
+of the filtered DataFrame.
+
+3. The function also creates the layout for the map, setting the hover mode to "closest" 
+and the map style to "open-street-map". The mapbox center is set to the mean latitude and 
+longitude values of the filtered DataFrame, and the zoom level is set to 10. 
+
+4. Finally, the function creates a figure using the trace and layout, and returns the figure 
+as the output of the callback.
+
+
+
